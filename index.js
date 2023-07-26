@@ -1,5 +1,10 @@
-const argv = require('yargs').argv;
+const contacts = require('./db/contacts.js')
 
+const argv = require('yargs').argv;
+// const { error } = require('console');
+// const fs = require('fs/promises')
+
+// global.foo = 3;
 
 function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
