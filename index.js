@@ -1,31 +1,45 @@
-const contacts = require('./db/contacts.js')
+const contacts = require("./contacts");
+const { Command } = require("commander");
+const program = new Command();
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-const argv = require('yargs').argv;
-// const { error } = require('console');
-// const fs = require('fs/promises')
+program.parse(process.argv);
 
-// global.foo = 3;
+const argv = program.opts();
 
-function invokeAction({ action, id, name, email, phone }) {
+async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
-    case 'list':
-      // ...
-      break;
+    case "list":
+      const allContacts = await contacts.listContacts();
+      return console.table(allContacts);
 
-    case 'get':
-      // ... id
-      break;
+    case "get":
+      const oneContact = await contacts.getContactById(id);
+      return console.log(oneContact);
 
-    case 'add':
-      // ... name email phone
-      break;
+    case "add":
+      const newContact = await contacts.addContact(name, email, phone);
+      return console.log(newContact);
 
-    case 'remove':
-      // ... id
-      break;
+    case "remove":
+      const deleteContact = await contacts.removeContact(id);
+      return console.log(deleteContact);
+
+    case "updateById":
+      const updateContact = await contacts.updateById(id, {
+        name,
+        email,
+        phone,
+      });
+      return console.log(updateContact);
 
     default:
-      console.warn('\x1B[31m Unknown action type!');
+      console.warn("\x1B[31m Unknown action type!");
   }
 }
 
